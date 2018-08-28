@@ -1,5 +1,5 @@
 # frps-docker
 
 ```
-docker run -d --name frp-server -v ./conf:/conf cloverzrg/frps -c /conf/frps.ini
+docker run -d --name frp-server -v ./conf:/conf --restart=always cloverzrg/frps
 ```
