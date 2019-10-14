@@ -10,11 +10,21 @@ docker run -d --name frp-server -p <HOST_PORT>:<CONTAINER_PORT> -v <ABSOLUTE_PAT
 ```
 # /root/conf/frps.ini
 [common]
-bind_port = 7000
+bind_port = 7700
+token = aNolEYwREgOD
 vhost_http_port = 8080
+vhost_https_port = 8443
+
+dashboard_port = 7500
+dashboard_user = admin
+dashboard_pwd = aNolEYwREgOD1
+
+
+tcp_mux = true
+max_pool_count = 10
 ```
 
 ```
-docker run -d --name frp-server -p 7000:7000 -p 8080:8080 -v /root/conf:/conf --restart=always cloverzrg/frps-docker
+docker run -d --name frp-server -p 7700:7700 -p 8080:8080 -p 7500:7500 -v /root/conf:/conf --restart=always cloverzrg/frps-docker
 ```
 
