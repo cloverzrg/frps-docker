@@ -2,13 +2,12 @@
 
 ## USAGE
 ```
-# frps.ini place in ./conf/frps.ini
 docker run -d --name frp-server -p <HOST_PORT>:<CONTAINER_PORT> -v <ABSOLUTE_PATH>/conf:/conf --restart=always cloverzrg/frps-docker
 ```
 
 ## EXAMPLE
 ```
-# /root/conf/frps.ini
+# vi /root/conf/frps.ini
 [common]
 bind_port = 7700
 token = aNolEYwREgOD
