@@ -1,15 +1,15 @@
 # frps-docker
 
 ## USAGE
-#### use host network
+#### 1. use host network
 `docker run -d --name frp-server --net=host -v /var/docker/frps/conf/frps.ini:/conf/frps.ini --restart=always cloverzrg/frps-docker`
 
-#### expose port
+#### 2. expose port
 ```
 docker run -d --name frp-server -p <HOST_PORT>:<CONTAINER_PORT> -v <ABSOLUTE_PATH>/conf:/conf --restart=always cloverzrg/frps-docker
 ```
 
-## EXAMPLE conf.ini
+## EXAMPLE
 ```
 # vi /root/conf/frps.ini
 [common]
