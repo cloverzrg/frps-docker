@@ -5,9 +5,7 @@
 `docker run -d --name frp-server --net=host -v /var/docker/frps/conf/frps.ini:/conf/frps.ini --restart=always cloverzrg/frps-docker`
 
 #### 2. expose port
-```
-docker run -d --name frp-server -p <HOST_PORT>:<CONTAINER_PORT> -v <ABSOLUTE_PATH>/conf:/conf --restart=always cloverzrg/frps-docker
-```
+`docker run -d --name frp-server -p <HOST_PORT>:<CONTAINER_PORT> -v <ABSOLUTE_PATH>/conf:/conf --restart=always cloverzrg/frps-docker`
 
 ## EXAMPLE
 ```
@@ -38,7 +36,7 @@ server_addr = xxx.xxx.xxx.xxx
 server_port = 7700
 token = aNolEYwREgOD
 
-[k-web]
+[xx-admin-web]
 type = http
 local_port = 80
 use_encryption = true
