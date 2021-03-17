@@ -1,6 +1,6 @@
 FROM golang:alpine as builder
 RUN apk update && apk add --no-cache git build-base make tzdata
-ENV FRP_VERSION 0.35.1
+ENV FRP_VERSION 0.36.0
 RUN git clone --branch v${FRP_VERSION} https://github.com/fatedier/frp.git
 WORKDIR /go/frp
 RUN make frps
