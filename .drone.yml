@@ -43,6 +43,7 @@ steps:
     - name: gomodcache
       path: /go/pkg/mod
   commands:
+    - echo ${PATH}
     - docker login --username=cloverzrg -p ${password}
     - |
         (
