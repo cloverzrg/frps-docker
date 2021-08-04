@@ -33,7 +33,7 @@ steps:
 - name: build-docker
   image: docker:dind
   environment:
-    DOCKER_CLI_EXPERIMENTAL: enabled
+#    DOCKER_CLI_EXPERIMENTAL: enabled
     password:
       from_secret: registry-password
   volumes:
