@@ -20,6 +20,7 @@ RUN apk update && apk add --no-cache ca-certificates tzdata
 COPY --from=builder /go/frp/bin/frps /frps/
 ENV TZ=Asia/Shanghai
 RUN mkdir /conf
+RUN uname -a
 VOLUME /conf
 WORKDIR /frps
 ENTRYPOINT ["./frps","-c","/conf/frps.ini"]
