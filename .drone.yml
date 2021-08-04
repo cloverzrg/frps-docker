@@ -43,8 +43,6 @@ steps:
     - name: gomodcache
       path: /go/pkg/mod
   commands:
-    - echo $PATH
-    - docker login --username=cloverzrg -p $password
     - |
         (
           set -x; \
@@ -53,12 +51,7 @@ steps:
             wget -O $FILE https://github.com/docker/buildx/releases/download/v0.6.1/buildx-v0.6.1.linux-arm64 \
             && chmod +x $FILE \
           || true
-        )
+        ) 
+    - docker login --username=cloverzrg -p $password
     - docker buildx create --use
-    - |
-        docker buildx build \
-          --platform linux/arm,linux/arm64,linux/amd64,linux/386 \
-          --tag cloverzrg/frps-test:0.37.1 \
-          --tag cloverzrg/frps-test:latest \
-          --push \
-          .
+    - docker buildx build --platform linux/arm64,linux/amd64,linux/386,linux/arm -t cloverzrg/frps-test:0.37.1 -t cloverzrg/frps-test:latest . --push
