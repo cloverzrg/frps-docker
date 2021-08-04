@@ -57,4 +57,4 @@ steps:
         ) 
     - docker login --username=cloverzrg -p $password
     - docker buildx create --use
-    - docker buildx build --platform linux/arm64,linux/amd64,linux/386,linux/arm -t cloverzrg/frps-test:$DRONE_TAG -t cloverzrg/frps-test:latest . --push
+    - docker buildx build --platform linux/arm64,linux/amd64,linux/386,linux/arm -t cloverzrg/frps-test:${DRONE_TAG} -t cloverzrg/frps-test:latest --push --build-arg DRONE_TAG=${DRONE_TAG} .
