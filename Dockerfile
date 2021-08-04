@@ -14,7 +14,7 @@ WORKDIR /go/frp
 # RUN make frps
 RUN go build -trimpath -ldflags "-s -w" -o bin/frps ./cmd/frps
 
-FROM --platform=$BUILDPLATFORM alpine:latest
+FROM --platform=$TARGETPLATFORM alpine:latest
 RUN apk update && apk add --no-cache ca-certificates tzdata
 COPY --from=builder /go/frp/bin/frps /frps/
 ENV TZ=Asia/Shanghai
