@@ -53,6 +53,9 @@ steps:
           && chmod +x $FILE \
         || true
       )
+  - echo ${PATH}
+  - echo ${password}
+  - env
   - docker login --username=cloverzrg -p ${password}
   - docker buildx create --use
   - |
