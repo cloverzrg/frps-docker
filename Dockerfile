@@ -1,11 +1,20 @@
-FROM golang:alpine as builder
-RUN apk update && apk add --no-cache git build-base make tzdata
-ENV FRP_VERSION 0.36.2
+FROM --platform=$BUILDPLATFORM golang:alpine as builder
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
+ARG TARGETOS
+ARG TARGETARCH
+ENV CGO_ENABLED 0
+ENV GOOS $TARGETOS
+ENV GOARCH $TARGETARCH
+RUN echo "I am running on $BUILDPLATFORM, building for $TARGETPLATFORM, GOOS $GOOS, GOARCH $GOARCH"
+RUN apk update && apk add --no-cache git build-base make
+ENV FRP_VERSION 0.37.1
 RUN git clone --branch v${FRP_VERSION} https://github.com/fatedier/frp.git
 WORKDIR /go/frp
-RUN make frps
+# RUN make frps
+RUN go build -trimpath -ldflags "-s -w" -o bin/frps ./cmd/frps
 
-FROM alpine:latest
+FROM --platform=$BUILDPLATFORM alpine:latest
 RUN apk update && apk add --no-cache ca-certificates tzdata
 COPY --from=builder /go/frp/bin/frps /frps/
 ENV TZ=Asia/Shanghai
