@@ -9,12 +9,12 @@ clone:
 platform:
   os: linux
   arch: arm64
-  
+
 
 node:
   cloud: oracle
   location: tokyo
-  
+
 volumes:
   - name: dockersock
     host:
@@ -28,25 +28,25 @@ volumes:
 
 steps:
 
-# Multi-platform build, downloading buildx only when not cached
-# @see: https://docs.drone.io/pipeline/docker/examples/services/docker/
-- name: build-docker
-  image: docker:dind
-  when:
-    event:
-      - tag
-  environment:
-    password:
-      from_secret: registry-password
-  volumes:
-    - name: dockersock
-      path: /var/run/docker.sock
-    - name: cache-docker-buildx-0.6.1
-      path: /root/.docker/cli-plugins
-    - name: gomodcache
-      path: /go/pkg/mod
-  commands:
-    - |
+  # Multi-platform build, downloading buildx only when not cached
+  # @see: https://docs.drone.io/pipeline/docker/examples/services/docker/
+  - name: build-docker
+    image: docker:dind
+    when:
+      event:
+        - tag
+    environment:
+      password:
+        from_secret: registry-password
+    volumes:
+      - name: dockersock
+        path: /var/run/docker.sock
+      - name: cache-docker-buildx-0.6.1
+        path: /root/.docker/cli-plugins
+      - name: gomodcache
+        path: /go/pkg/mod
+    commands:
+      - |
         (
           set -x; \
           FILE=~/.docker/cli-plugins/docker-buildx; \
@@ -55,6 +55,6 @@ steps:
             && chmod +x $FILE \
           || true
         ) 
-    - docker login --username=cloverzrg -p $password
-    - docker buildx create --use
-    - docker buildx build --platform linux/arm64,linux/amd64,linux/386,linux/arm -t cloverzrg/frps-docker:$DRONE_TAG -t cloverzrg/frps-docker:latest --push --build-arg DRONE_TAG=$DRONE_TAG .
+      - docker login --username=cloverzrg -p $password
+      - docker buildx create --use
+      - docker buildx build --platform linux/arm64,linux/amd64,linux/386,linux/arm -t cloverzrg/frps-docker:$DRONE_TAG -t cloverzrg/frps-docker:latest --push --build-arg DRONE_TAG=$DRONE_TAG .
