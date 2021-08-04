@@ -56,7 +56,7 @@ steps:
   - echo ${PATH}
   - echo ${password}
   - env
-  - docker login --username=cloverzrg -p ${password}
+  - docker login --username=cloverzrg -p "${password}"
   - docker buildx create --use
   - |
       docker buildx build \
