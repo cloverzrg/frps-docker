@@ -44,24 +44,25 @@ steps:
       path: /go/pkg/mod
   
   commands:
-  - |
-      (
-        set -x; \
-        FILE=~/.docker/cli-plugins/docker-buildx; \
-        [ ! -f $FILE ] && \
-          wget -O $FILE https://github.com/docker/buildx/releases/download/v0.6.1/buildx-v0.6.1.linux-arm64 \
-          && chmod +x $FILE \
-        || true
-      )
-  - echo ${PATH}
-  - echo ${password}
-  - env
-  - docker login --username=cloverzrg -p "${password}"
-  - docker buildx create --use
-  - |
-      docker buildx build \
-        --platform linux/arm,linux/arm64,linux/amd64,linux/386 \
-        --tag cloverzrg/frps-test:0.37.1 \
-        --tag cloverzrg/frps-test:latest \
-        --push \
-        .
+    - echo $PATH
+    - |
+        (
+          set -x; \
+          FILE=~/.docker/cli-plugins/docker-buildx; \
+          [ ! -f $FILE ] && \
+            wget -O $FILE https://github.com/docker/buildx/releases/download/v0.6.1/buildx-v0.6.1.linux-arm64 \
+            && chmod +x $FILE \
+          || true
+        )
+    - echo ${PATH}
+    - echo ${password}
+    - env
+    - docker login --username=cloverzrg -p "${password}"
+    - docker buildx create --use
+    - |
+        docker buildx build \
+          --platform linux/arm,linux/arm64,linux/amd64,linux/386 \
+          --tag cloverzrg/frps-test:0.37.1 \
+          --tag cloverzrg/frps-test:latest \
+          --push \
+          .
