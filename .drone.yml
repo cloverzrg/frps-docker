@@ -42,9 +42,8 @@ steps:
       path: /root/.docker/cli-plugins
     - name: gomodcache
       path: /go/pkg/mod
-  
   commands:
-    - docker login --username=cloverzrg -p "${password}"
+    - docker login --username=cloverzrg -p ${password}
     - |
         (
           set -x; \
