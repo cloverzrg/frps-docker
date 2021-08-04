@@ -53,7 +53,7 @@ steps:
           && chmod +x $FILE \
         || true
       )
-  - docker login --username cloverzrg --password "$DOCKERHUB_PASSWORD"
+  - docker login --username=cloverzrg -p ${DOCKERHUB_PASSWORD}
   - docker buildx create --use
   - |
       docker buildx build \
