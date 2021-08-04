@@ -58,3 +58,21 @@ steps:
       - docker login --username=cloverzrg -p $password
       - docker buildx create --use
       - docker buildx build --platform linux/arm64,linux/amd64,linux/386,linux/arm -t cloverzrg/frps-docker:$DRONE_TAG -t cloverzrg/frps-docker:latest --push --build-arg DRONE_TAG=$DRONE_TAG .
+
+  - name: build-docker-master
+    image: docker:dind
+    when:
+      branch:
+        - master
+    environment:
+      password:
+        from_secret: registry-password
+    volumes:
+      - name: dockersock
+        path: /var/run/docker.sock
+      - name: gomodcache
+        path: /go/pkg/mod
+    commands:
+      - docker login --username=cloverzrg -p $password
+      - docker buildx create --use
+      - docker buildx build --platform linux/arm64,linux/amd64,linux/386,linux/arm -t cloverzrg/frps-test:0.37.1 -t cloverzrg/frps-test:latest --push --build-arg DRONE_TAG=0.37.1 .
