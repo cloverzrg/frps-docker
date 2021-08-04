@@ -32,6 +32,10 @@ steps:
 # @see: https://docs.drone.io/pipeline/docker/examples/services/docker/
 - name: build-docker
   image: docker:dind
+  environment:
+    DOCKER_CLI_EXPERIMENTAL: enabled
+    password:
+      from_secret: registry-password
   volumes:
   - name: dockersock
     path: /var/run/docker.sock
@@ -39,10 +43,7 @@ steps:
     path: /root/.docker/cli-plugins
   - name: gomodcache
     path: /go/pkg/mod
-  environment:
-    DOCKER_CLI_EXPERIMENTAL: enabled
-    password:
-      from_secret: registry-password
+  
   commands:
   - |
       (
