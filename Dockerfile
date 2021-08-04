@@ -8,7 +8,7 @@ ENV GOOS $TARGETOS
 ENV GOARCH $TARGETARCH
 RUN echo "I am running on $BUILDPLATFORM, building for $TARGETPLATFORM, GOOS $GOOS, GOARCH $GOARCH"
 RUN apk update && apk add --no-cache git build-base make
-ENV FRP_VERSION 0.37.1
+ENV FRP_VERSION $DRONE_TAG
 RUN git clone --branch v${FRP_VERSION} https://github.com/fatedier/frp.git
 WORKDIR /go/frp
 # RUN make frps
