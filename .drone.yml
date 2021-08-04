@@ -10,6 +10,10 @@ platform:
   os: linux
   arch: arm64
   
+when:
+  event:
+    - tag
+  
 
 node:
   cloud: oracle
