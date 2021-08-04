@@ -10,10 +10,6 @@ platform:
   os: linux
   arch: arm64
   
-when:
-  event:
-    - tag
-  
 
 node:
   cloud: oracle
@@ -36,6 +32,9 @@ steps:
 # @see: https://docs.drone.io/pipeline/docker/examples/services/docker/
 - name: build-docker
   image: docker:dind
+  when:
+    event:
+      - tag
   environment:
     password:
       from_secret: registry-password
