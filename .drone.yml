@@ -41,7 +41,7 @@ steps:
     path: /go/pkg/mod
   environment:
     DOCKER_CLI_EXPERIMENTAL: enabled
-    DOCKERHUB_PASSWORD:
+    password:
       from_secret: registry-password
   commands:
   - |
@@ -53,7 +53,7 @@ steps:
           && chmod +x $FILE \
         || true
       )
-  - docker login --username=cloverzrg -p ${DOCKERHUB_PASSWORD}
+  - docker login --username=cloverzrg -p ${password}
   - docker buildx create --use
   - |
       docker buildx build \
