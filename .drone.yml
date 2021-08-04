@@ -44,7 +44,7 @@ steps:
       path: /go/pkg/mod
   
   commands:
-    - echo $PATH
+    - docker login --username=cloverzrg -p "${password}"
     - |
         (
           set -x; \
@@ -54,10 +54,6 @@ steps:
             && chmod +x $FILE \
           || true
         )
-    - echo ${PATH}
-    - echo ${password}
-    - env
-    - docker login --username=cloverzrg -p "${password}"
     - docker buildx create --use
     - |
         docker buildx build \
