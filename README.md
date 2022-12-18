@@ -2,8 +2,14 @@
 <a href="https://hub.docker.com/r/cloverzrg/frps-docker/tags?page=1&ordering=last_updated"><img src="https://img.shields.io/github/v/tag/cloverzrg/frps-docker?label=version&style=flat-square" alt="Latest Version"></a>
   <a href="https://hub.docker.com/r/cloverzrg/frps-docker/"><img src="https://img.shields.io/docker/stars/cloverzrg/frps-docker.svg?style=flat-square&logo=docker" alt="Docker Stars"></a>
   <a href="https://hub.docker.com/r/cloverzrg/frps-docker/"><img src="https://img.shields.io/docker/pulls/cloverzrg/frps-docker.svg?style=flat-square&logo=docker" alt="Docker Pulls"></a>
-  
+ 
+ ## Build Status: 
   [![Build Status](https://drone.jeongen.com/api/badges/cloverzrg/frps-docker/status.svg)](https://drone.jeongen.com/cloverzrg/frps-docker)
+
+
+## Dockerfile. 
+https://github.com/cloverzrg/frps-docker
+
 
 ## USAGE
 #### 1. use host network
