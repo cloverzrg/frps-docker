@@ -19,9 +19,9 @@ volumes:
   - name: dockersock
     host:
       path: /var/run/docker.sock
-  - name: cache-docker-buildx-0.6.1
+  - name: cache-docker-buildx-0.10.5
     host:
-      path: /tmp/drone/cache/docker-buildx-0.6.1
+      path: /tmp/drone/cache/docker-buildx-0.10.5
   - name: gomodcache
     host:
       path: /var/docker/drone-runner/cache/gomod
@@ -41,7 +41,7 @@ steps:
     volumes:
       - name: dockersock
         path: /var/run/docker.sock
-      - name: cache-docker-buildx-0.6.1
+      - name: cache-docker-buildx-0.10.5
         path: /root/.docker/cli-plugins
       - name: gomodcache
         path: /go/pkg/mod
@@ -51,10 +51,10 @@ steps:
           set -x; \
           FILE=~/.docker/cli-plugins/docker-buildx; \
           [ ! -f $FILE ] && \
-            wget -O $FILE https://github.com/docker/buildx/releases/download/v0.6.1/buildx-v0.6.1.linux-arm64 \
+            wget -O $FILE https://github.com/docker/buildx/releases/download/v0.10.5/buildx-v0.10.5.linux-arm64 \
             && chmod +x $FILE \
           || true
         ) 
       - docker login --username=cloverzrg -p $password
       - docker buildx create --use
-      - docker buildx build --platform linux/arm64,linux/amd64,linux/386,linux/arm -t cloverzrg/frps-docker:$DRONE_TAG -t cloverzrg/frps-docker:latest --push --build-arg DRONE_TAG=$DRONE_TAG .
+      - docker buildx build --platform linux/arm64,linux/amd64,linux/386 -t cloverzrg/frps-docker:$DRONE_TAG -t cloverzrg/frps-docker:latest --push --build-arg DRONE_TAG=$DRONE_TAG .
