@@ -59,3 +59,31 @@ steps:
       # - docker buildx create --use
       - docker buildx build --platform linux/arm64,linux/amd64,linux/386 -t cloverzrg/frps-docker:$DRONE_TAG -t cloverzrg/frps-docker:latest --push --build-arg DRONE_TAG=$DRONE_TAG .
       - docker buildx build -f Dockerfile.frpc --platform linux/arm64,linux/amd64,linux/386 -t cloverzrg/frpc-docker:$DRONE_TAG -t cloverzrg/frpc-docker:latest --push --build-arg DRONE_TAG=$DRONE_TAG .
+
+  - name: build-docker-master
+    image: docker:dind
+    environment:
+      password:
+        from_secret: registry-password
+    volumes:
+      - name: dockersock
+        path: /var/run/docker.sock
+      - name: cache-docker-buildx-0.14.1
+        path: /root/.docker/cli-plugins
+      - name: gomodcache
+        path: /go/pkg/mod
+    commands:
+      - |
+        (
+          set -x; \
+          FILE=~/.docker/cli-plugins/docker-buildx; \
+          [ ! -f $FILE ] && \
+            wget -O $FILE https://github.com/docker/buildx/releases/download/v0.14.1/buildx-v0.14.1.linux-arm64 \
+            && chmod +x $FILE \
+          || true
+        ) 
+      - DRONE_TAG=0.59.0
+      - docker login --username=cloverzrg -p $password
+      - docker buildx create --use
+      - docker buildx build --platform linux/arm64,linux/amd64,linux/386 -t cloverzrg/frps-docker:$DRONE_TAG -t cloverzrg/frps-docker:latest --push --build-arg DRONE_TAG=$DRONE_TAG .
+      - docker buildx build -f Dockerfile.frpc --platform linux/arm64,linux/amd64,linux/386 -t cloverzrg/frpc-docker:$DRONE_TAG -t cloverzrg/frpc-docker:latest --push --build-arg DRONE_TAG=$DRONE_TAG .
