@@ -65,8 +65,10 @@ steps:
   - name: build-docker-master
     image: docker:dind
     when:
-      event:
+      branch:
         - master
+      event:
+        - push
     environment:
       password:
         from_secret: registry-password
