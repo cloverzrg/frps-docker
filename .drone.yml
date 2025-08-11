@@ -19,17 +19,11 @@ volumes:
   - name: dockersock
     host:
       path: /var/run/docker.sock
-  - name: cache-docker-buildx-0.14.1
-    host:
-      path: /tmp/drone/cache/docker-buildx-0.14.1
   - name: gomodcache
     host:
       path: /var/docker/drone-runner/cache/gomod
 
 steps:
-
-  # Multi-platform build, downloading buildx only when not cached
-  # @see: https://docs.drone.io/pipeline/docker/examples/services/docker/
   - name: build-docker
     image: docker:dind
     when:
@@ -46,15 +40,6 @@ steps:
       - name: gomodcache
         path: /go/pkg/mod
     commands:
-      - |
-        (
-          set -x; \
-          FILE=~/.docker/cli-plugins/docker-buildx; \
-          [ ! -f $FILE ] && \
-            wget -O $FILE https://github.com/docker/buildx/releases/download/v0.14.1/buildx-v0.14.1.linux-arm64 \
-            && chmod +x $FILE \
-          || true
-        ) 
       - docker login --username=cloverzrg -p $password
       - build_node=$(docker buildx create --use)
       - echo 'build node:'$build_node
