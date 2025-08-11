@@ -9,6 +9,7 @@ platform:
   os: linux
   arch: arm64
 
+# 如果你的 runner 有节点选择需求，这里可以保留；Drone 新版本里 node 选择常用的是 "node" labels。
 node:
   cloud: oracle
   location: tokyo
@@ -17,9 +18,6 @@ volumes:
   - name: dockersock
     host:
       path: /var/run/docker.sock
-  - name: cache-docker-buildx-0.14.1
-    host:
-      path: /tmp/drone/cache/docker-buildx-0.14.1
   - name: gomodcache
     host:
       path: /var/docker/drone-runner/cache/gomod
@@ -36,24 +34,53 @@ steps:
     volumes:
       - name: dockersock
         path: /var/run/docker.sock
-      - name: cache-docker-buildx-0.14.1
-        path: /root/.docker/cli-plugins
       - name: gomodcache
         path: /go/pkg/mod
     commands:
-      - docker version
-      - docker buildx version || true
-      - docker login --username=cloverzrg -p $password
-      - build_node=$(docker buildx create --use)
-      - echo "build node: $build_node"
-      - docker buildx build --platform linux/arm64,linux/amd64,linux/386 -t cloverzrg/frps-docker:$DRONE_TAG -t cloverzrg/frps-docker:latest --push --build-arg DRONE_TAG=$DRONE_TAG .
-      - docker buildx build -f Dockerfile.frpc --platform linux/arm64,linux/amd64,linux/386 -t cloverzrg/frpc-docker:$DRONE_TAG -t cloverzrg/frpc-docker:latest --push --build-arg DRONE_TAG=$DRONE_TAG .
-      - docker buildx rm $build_node
+      - |
+        set -e
+        echo "[STEP] Show docker versions"
+        docker version
+        docker buildx version || true
+
+        echo "[STEP] Login registry"
+        docker login --username=cloverzrg -p "$password"
+
+        # 如需确保多架构（如果镜像里还没安装 binfmt），取消下一行注释：
+        # docker run --privileged --rm tonistiigi/binfmt --install arm64,amd64,386
+
+        echo "[STEP] Create buildx builder"
+        build_node=$(docker buildx create --use)
+        echo "build node: $build_node"
+
+        echo "[STEP] Build frps"
+        docker buildx build \
+          --platform linux/arm64,linux/amd64,linux/386 \
+          -t cloverzrg/frps-docker:${DRONE_TAG} \
+          -t cloverzrg/frps-docker:latest \
+          --push \
+          --build-arg DRONE_TAG=${DRONE_TAG} \
+          .
+
+        echo "[STEP] Build frpc"
+        docker buildx build \
+          -f Dockerfile.frpc \
+          --platform linux/arm64,linux/amd64,linux/386 \
+          -t cloverzrg/frpc-docker:${DRONE_TAG} \
+          -t cloverzrg/frpc-docker:latest \
+          --push \
+          --build-arg DRONE_TAG=${DRONE_TAG} \
+          .
+
+        echo "[STEP] Cleanup builder"
+        docker buildx rm "$build_node" || true
 
   - name: build-docker-master
     image: docker:dind
     when:
       event:
+        - push
+      branch:
         - master
     environment:
       password:
@@ -61,17 +88,41 @@ steps:
     volumes:
       - name: dockersock
         path: /var/run/docker.sock
-      - name: cache-docker-buildx-0.14.1
-        path: /root/.docker/cli-plugins
       - name: gomodcache
         path: /go/pkg/mod
     commands:
-      - docker version
-      - docker buildx version || true
-      - DRONE_TAG=master
-      - docker login --username=cloverzrg -p $password
-      - build_node=$(docker buildx create --use)
-      - echo "build node: $build_node"
-      - docker buildx build --platform linux/arm64,linux/amd64,linux/386 -t cloverzrg/frps-docker:latest --push --build-arg DRONE_TAG=$DRONE_TAG .
-      - docker buildx build -f Dockerfile.frpc --platform linux/arm64,linux/amd64,linux/386 -t cloverzrg/frpc-docker:latest --push --build-arg DRONE_TAG=$DRONE_TAG .
-      - docker buildx rm $build_node
+      - |
+        set -e
+        DRONE_TAG=master
+        echo "[STEP] Show docker versions"
+        docker version
+        docker buildx version || true
+
+        echo "[STEP] Login registry"
+        docker login --username=cloverzrg -p "$password"
+
+        # docker run --privileged --rm tonistiigi/binfmt --install arm64,amd64,386
+
+        echo "[STEP] Create buildx builder"
+        build_node=$(docker buildx create --use)
+        echo "build node: $build_node"
+
+        echo "[STEP] Build frps (latest)"
+        docker buildx build \
+          --platform linux/arm64,linux/amd64,linux/386 \
+          -t cloverzrg/frps-docker:latest \
+          --push \
+          --build-arg DRONE_TAG=${DRONE_TAG} \
+          .
+
+        echo "[STEP] Build frpc (latest)"
+        docker buildx build \
+          -f Dockerfile.frpc \
+          --platform linux/arm64,linux/amd64,linux/386 \
+          -t cloverzrg/frpc-docker:latest \
+          --push \
+          --build-arg DRONE_TAG=${DRONE_TAG} \
+          .
+
+        echo "[STEP] Cleanup builder"
+        docker buildx rm "$build_node" || true
