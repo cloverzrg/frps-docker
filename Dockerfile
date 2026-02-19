@@ -12,6 +12,7 @@ RUN apk update && apk add --no-cache git build-base make ca-certificates tzdata
 RUN git clone https://github.com/fatedier/frp.git && \
     cd frp && \
     if [ -n "$DRONE_TAG" ] && [ "$DRONE_TAG" != "master" ]; then git checkout v${DRONE_TAG}; fi
+RUN pwd && ls -lah
 WORKDIR /go/frp
 RUN go build -trimpath -ldflags "-s -w" -o bin/frps ./cmd/frps
 
