@@ -29,7 +29,7 @@ vhost_https_port = 8443
 
 dashboard_port = 7500
 dashboard_user = admin
-dashboard_pwd = aNolEYwREgOD1
+dashboard_pwd = aNolEYwREgOF1
 
 
 tcp_mux = true
