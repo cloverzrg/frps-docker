@@ -18,6 +18,7 @@ RUN if [ -n "$DRONE_TAG" ] && [ "$DRONE_TAG" != "master" ]; then \
     fi
 WORKDIR /go/frp
 RUN go mod download
+RUN mkdir -p web/frpc/dist && touch web/frpc/dist/index.html
 RUN go build -trimpath -ldflags "-s -w" -o bin/frpc ./cmd/frpc
 
 FROM alpine:latest
