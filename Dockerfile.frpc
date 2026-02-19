@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM golang:alpine AS builder
+FROM --platform=$BUILDPLATFORM golang:1.24-alpine AS builder
 ARG TARGETPLATFORM
 ARG BUILDPLATFORM
 ARG TARGETOS
@@ -8,13 +8,13 @@ ENV CGO_ENABLED=0
 ENV GOOS=$TARGETOS
 ENV GOARCH=$TARGETARCH
 RUN echo "I am running on $BUILDPLATFORM, building for $TARGETPLATFORM, GOOS $GOOS, GOARCH $GOARCH"
-RUN apk update && apk add --no-cache git build-base make ca-certificates tzdata
+RUN apk update && apk add --no-cache git build-base make ca-certificates tzdata nodejs npm
 RUN git clone https://github.com/fatedier/frp.git && \
     cd frp && \
     if [ -n "$DRONE_TAG" ] && [ "$DRONE_TAG" != "master" ]; then git checkout v${DRONE_TAG}; fi && \
-    mkdir -p web/frpc/dist && touch web/frpc/dist/index.html
+    cd web/frpc && npm install && npm run build
 WORKDIR /go/frp
-RUN go build -trimpath -ldflags "-s -w" -o bin/frpc ./cmd/frpc
+RUN go build -trimpath -ldflags "-s -w" -tags frpc -o bin/frpc ./cmd/frpc
 
 FROM alpine:latest
 COPY --from=builder /etc/ssl/certs /etc/ssl/certs
