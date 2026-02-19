@@ -9,8 +9,11 @@ ENV GOOS=$TARGETOS
 ENV GOARCH=$TARGETARCH
 RUN echo "I am running on $BUILDPLATFORM, building for $TARGETPLATFORM, GOOS $GOOS, GOARCH $GOARCH"
 RUN apk update && apk add --no-cache git build-base make ca-certificates tzdata
-ENV FRP_VERSION=$DRONE_TAG
-RUN git clone --branch v${FRP_VERSION} https://github.com/fatedier/frp.git
+RUN git clone https://github.com/fatedier/frp.git /go/frp && \
+    cd /go/frp && \
+    if [ -n "$DRONE_TAG" ] && [ "$DRONE_TAG" != "master" ]; then \
+        git checkout v${DRONE_TAG}; \
+    fi
 WORKDIR /go/frp
 # RUN make frps
 RUN go build -trimpath -ldflags "-s -w" -o bin/frps ./cmd/frps
