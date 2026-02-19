@@ -14,6 +14,7 @@ RUN git clone https://github.com/fatedier/frp.git && \
     if [ -n "$DRONE_TAG" ] && [ "$DRONE_TAG" != "master" ]; then git checkout v${DRONE_TAG}; fi
 RUN pwd && ls -lah
 WORKDIR /go/frp
+RUN ls -lah
 RUN go build -trimpath -ldflags "-s -w" -o bin/frps ./cmd/frps
 
 FROM alpine:latest
